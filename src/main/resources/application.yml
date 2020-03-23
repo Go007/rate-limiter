@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: rate-limiter
+  profiles:
+    active: dev
+
+server:
+  port: 9999
+  servlet:
+    context-path: /limit
+
