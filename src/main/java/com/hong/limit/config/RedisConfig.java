@@ -9,11 +9,17 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.*;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.data.redis.core.script.RedisScript;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
@@ -102,6 +108,14 @@ public class RedisConfig extends CachingConfigurerSupport {
     @Bean
     public KeyGenerator simpleCacheKeyGenerator() {
         return (target, method, params) -> "";
+    }
+
+    @Bean
+    public RedisScript<Long> rateLimiterLua() {
+        DefaultRedisScript<Long> defaultRedisScript = new DefaultRedisScript<Long>();
+        defaultRedisScript.setLocation(new ClassPathResource("classpath:rate_limiter.lua"));
+        defaultRedisScript.setResultType(Long.class);
+        return defaultRedisScript;
     }
 
 }
