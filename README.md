@@ -1,6 +1,9 @@
 # rate-limiter
 分布式API限流
 
+# 知识点
+Spring Boot使用Lua操作Redis
+
 # 参考:
 https://www.jianshu.com/p/a3d068f2586d
 https://www.iteye.com/blog/jinnianshilongnian-2305117
