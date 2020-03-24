@@ -31,7 +31,7 @@ public class RedisRateLimiter {
     private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
-    private RedisScript<Long> rateLimiterLua;
+    private RedisScript<Integer> rateLimiterLua;
 
     /**
      * 获取令牌，访问redis异常算做成功
@@ -86,7 +86,7 @@ public class RedisRateLimiter {
                 }
             });
 
-            Long acquire = stringRedisTemplate.execute(rateLimiterLua, ImmutableList.of(RATE_LIMITER_KEY_PREFIX + key), RATE_LIMITER_ACQUIRE_METHOD, permits.toString(), currMillSecond.toString(), context);
+            Integer acquire = stringRedisTemplate.execute(rateLimiterLua, ImmutableList.of(RATE_LIMITER_KEY_PREFIX + key), RATE_LIMITER_ACQUIRE_METHOD, permits.toString(), currMillSecond.toString(), context);
 
             if (acquire == 1) {
                 token = Token.PASS;

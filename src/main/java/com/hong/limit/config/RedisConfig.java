@@ -111,11 +111,11 @@ public class RedisConfig extends CachingConfigurerSupport {
     }
 
     @Bean
-    public RedisScript<Long> rateLimiterLua() {
-        DefaultRedisScript<Long> defaultRedisScript = new DefaultRedisScript<Long>();
+    public RedisScript<Integer> rateLimiterLua() {
+        DefaultRedisScript<Integer> defaultRedisScript = new DefaultRedisScript();
         // defaultRedisScript.setLocation(new ClassPathResource("classpath:rate_limiter.lua")); 这种方式会报错读取不到文件
         defaultRedisScript.setLocation(new ClassPathResource("rate_limiter.lua"));
-        defaultRedisScript.setResultType(Long.class);
+        defaultRedisScript.setResultType(Integer.class);
         return defaultRedisScript;
     }
 
