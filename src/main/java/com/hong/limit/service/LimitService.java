@@ -23,6 +23,6 @@ public class LimitService {
     private RedisScript<Integer> rateLimiterLua;
 
     public long init (String key,String context){
-        return stringRedisTemplate.execute(rateLimiterLua, ImmutableList.of(key), RedisRateLimiter.RATE_LIMITER_INIT_METHOD, "100", "100",context);
+        return stringRedisTemplate.execute(rateLimiterLua, ImmutableList.of(key), RedisRateLimiter.RATE_LIMITER_INIT_METHOD, "10", "10",context);
     }
 }

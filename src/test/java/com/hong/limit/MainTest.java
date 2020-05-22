@@ -45,7 +45,7 @@ public class MainTest {
 
     @Test
     public void initLimiter(){
-        String apps = "rate-limiter";
+        String apps = "order";
         String key = RedisRateLimiter.RATE_LIMITER_KEY_PREFIX + "order:add";
         System.out.println(limitService.init(key,apps));
 
@@ -59,10 +59,8 @@ public class MainTest {
     @Test
     public void testLimiter() throws Exception{
         String key = "order:add";
-        String context = "rate-limiter";
-        BenchmarkCallback task = () -> {
-            System.out.println(Thread.currentThread().getName() + "获取令牌:" + redisRateLimiter.acquire(context,key));
-        };
+        String context = "order";
+        BenchmarkCallback task = () -> System.out.println(Thread.currentThread().getName() + "获取令牌:" + redisRateLimiter.acquire(context,key));
         Benchmark benchmark = new Benchmark(10,task);
         benchmark.test();
     }
