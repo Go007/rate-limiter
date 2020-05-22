@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author wanghong
  * @date 2020/03/23 22:47
- *  基于Redis的分布式限流器
+ * 基于Redis的分布式限流器
  **/
 @Component
 public class RedisRateLimiter {
@@ -78,15 +78,22 @@ public class RedisRateLimiter {
              * 各个实例服务器上的时间完全一致，如果实例服务器有较大时差(哪怕几十上百毫秒时差)，
              * 也会导致令牌计算有误，限流就会有问题。
              *
+             * 实际执行中发现的问题：
+             * 第一次执行 stringRedisTemplate.execute() 特别耗时，平均时间超过 1s，后面就平均几毫秒了
              */
+            long begin = System.currentTimeMillis();
             Long currMillSecond = stringRedisTemplate.execute(new RedisCallback<Long>() {
                 @Override
                 public Long doInRedis(RedisConnection connection) throws DataAccessException {
                     return connection.time();
                 }
             });
+           // Long currMillSecond = System.currentTimeMillis();
+            long end = System.currentTimeMillis();
+            System.out.println("connection.time()耗时：" + (end - begin) + "ms");
 
             Long acquire = stringRedisTemplate.execute(rateLimiterLua, ImmutableList.of(RATE_LIMITER_KEY_PREFIX + key), RATE_LIMITER_ACQUIRE_METHOD, permits.toString(), currMillSecond.toString(), context);
+            System.out.println("lua耗时：" + (System.currentTimeMillis() - end) + "ms");
 
             if (acquire == 1) {
                 token = Token.PASS;
