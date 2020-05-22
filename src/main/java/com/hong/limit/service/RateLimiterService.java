@@ -39,7 +39,7 @@ public class RateLimiterService implements InitializingBean {
     private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
-    private RedisScript<Integer> rateLimiterLua;
+    private RedisScript<Long> rateLimiterLua;
 
 
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);

@@ -111,11 +111,20 @@ public class RedisConfig extends CachingConfigurerSupport {
     }
 
     @Bean
-    public RedisScript<Integer> rateLimiterLua() {
-        DefaultRedisScript<Integer> defaultRedisScript = new DefaultRedisScript();
+    public RedisScript<Long> rateLimiterLua() {
+        DefaultRedisScript<Long> defaultRedisScript = new DefaultRedisScript();
         // defaultRedisScript.setLocation(new ClassPathResource("classpath:rate_limiter.lua")); 这种方式会报错读取不到文件
         defaultRedisScript.setLocation(new ClassPathResource("rate_limiter.lua"));
-        defaultRedisScript.setResultType(Integer.class);
+        /**
+         * 这里如果设置   defaultRedisScript.setResultType(Integer.class);会报如下异常：
+         * io.lettuce.core.RedisException: java.lang.IllegalStateException
+         * 解决办法：
+         * 指定org.springframework.data.redis.connection.ReturnType为Long.class，注意这里不能使用Integer.class，因为ReturnType不支持。
+         * 只支持List.class, Boolean.class和Long.class
+         *
+         * https://www.jianshu.com/p/b8f61421003d
+         */
+        defaultRedisScript.setResultType(Long.class);
         return defaultRedisScript;
     }
 
